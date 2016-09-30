@@ -32,7 +32,9 @@ public:
     ~FunctionTimer() { mFunctionTimes[mName] += clock() - mStartTime; }
     
     void stop(){ 
-        mStopTimes[mName] += clock() - mStartTime;
+        clock_t tmp = clock() - mStartTime;
+        //mStopTimes[mName] = clock() - mStartTime;
+        mStopTimes[mName] = ((float)tmp/CLOCKS_PER_SEC)*1000000;//microseconds
         //getrusage(RUSAGE_THREAD, &usage);
         //end = usage.ru_utime;
         //std::cout << end.tv_usec << std::endl;

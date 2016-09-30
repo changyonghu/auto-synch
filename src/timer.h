@@ -22,12 +22,17 @@ public:
 
     FunctionTimer(char const *name) : mName(name), mStartTime(clock()){}
     ~FunctionTimer() { mFunctionTimes[mName] += clock() - mStartTime; }
-    void stop(){ mStopTimes[mName] += clock() - mStartTime; }
+    void stop(){
+        clock_t tmp = clock() - mStartTime;
+        mStopTimes[mName] = ((float)tmp/CLOCKS_PER_SEC)*1000000;//microseconds 
+    }
 
     static void report(){
+        /*
         for(std::map<std::string, clock_t>::iterator it = mFunctionTimes.begin(); it!=mFunctionTimes.end(); ++it){
             std::cout << "FunctionTime: " << it->first << " => " << it->second << std::endl;
         }
+        */
         for(std::map<std::string, clock_t>::iterator it = mStopTimes.begin(); it!=mStopTimes.end(); ++it){
             std::cout << "StopTime: " << it->first << " => " << it->second << std::endl;
         }
