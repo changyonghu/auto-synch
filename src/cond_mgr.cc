@@ -1,43 +1,30 @@
 #include "cond_mgr.h"
 #include "timer.h"
 
-void CondMgr::waituntil( Predicate& prd, unique_lock<mutex>* guard ){
-    //FunctionTimer ft("waituntil");
-    //cout << "into waituntil" << endl;
-    //bool mylock = guard_.try_lock();
-    *guard = unique_lock<mutex>(mutex_);
-    //prd.PrintPredicate();
-    /*if(prd.AssertPredicate()){
-        cout << "predicate is true for the first time" << endl;
-        return;
-    }
-    */
-    //else{
+void CondMgr::waituntil( Predicate& prd ){
+
+    mutex_.lock();
     while(!prd.AssertPredicate()){
-        Predicate *tmp_prd = &prd;
-        this->AppendPredicate(tmp_prd);
-        condition_variable* cv = new condition_variable;
-        map_[tmp_prd] = cv;
-        //std::cout << "wait" << std::endl;
-        //guard_.unlock();
-        cv->wait(*guard);
+        condition_variable_any cv;
+        prd_cond_pair my_pair = {&prd, &cv};
+        this->AppendPredicate(my_pair);
+        cv.wait(mutex_);
     }
-        //FunctionTimer ft("waituntil");
         return;
-    //}
     
 }
 
 
-void CondMgr::autosignal(unique_lock<mutex>* guard){
-    for(int i=0; i < predicateQ_.size(); i++){
-        if(predicateQ_[i]->AssertPredicate()){
-            //predicateQ_[i]->PrintPredicate();
-            map_[predicateQ_[i]]->notify_one();
-            predicateQ_.erase(predicateQ_.begin()+i);
+void CondMgr::autosignal(){
+
+    for(int i=0; i < pair_list_.size(); i++){
+        if(pair_list_[i].prd->AssertPredicate()){
+            pair_list_[i].cv->notify_one();
+            pair_list_.erase(pair_list_.begin()+i);
             break;
         }
     }
-    guard->unlock();
+    mutex_.unlock();
     return;
+
 }

@@ -4,14 +4,14 @@
 BoundedBuffer::BoundedBuffer(int n) : buff(n)
 {
     putPtr = takePtr = count = 0;
+
 }
 
 
 void BoundedBuffer::put ( vector<int> items )
 {
     //FunctionTimer ft("put");
-    unique_lock<mutex> guard(mymutex);
-    
+    unique_lock<mutex> guard(mymutex); 
     while ( items.size() + count > buff.capacity() ){
         insufficientSpace.wait(guard);
     }
@@ -39,6 +39,5 @@ vector<int> BoundedBuffer::take( int num )
     }
     count -= num;
     insufficientSpace.notify_all();
-    //ft.stop();
     return ret;
 }

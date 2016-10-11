@@ -60,6 +60,8 @@ int main(int argc, char* argv[])
     ft.stop();
     FunctionTimer::report();
     //sleep(30);
+    cout << "sum_p: " << sum_p << endl;
+    cout << "result: " << mybuff.result() << endl;
     return 0;
 }
 

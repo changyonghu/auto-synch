@@ -26,6 +26,7 @@ public:
     BoundedBuffer( int );
     void put( vector<int> );
     vector<int> take ( int );
+    int result(void);
     /*
     thread putT( vector<int> arg ){
         return thread([=] { put(arg); });

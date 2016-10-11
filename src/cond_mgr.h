@@ -11,6 +11,7 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <list>
 #include <mutex>
 #include <map>
 #include <condition_variable>
@@ -18,24 +19,27 @@
 
 using namespace std;
 
+struct prd_cond_pair{
+    Predicate* prd;
+    condition_variable_any* cv;
+};
 
 class CondMgr {
 
-    vector<Predicate*> predicateQ_;
+    vector<prd_cond_pair> pair_list_;
     mutex mutex_;
-    //unique_lock<mutex> guard_;
-    map<Predicate*, condition_variable*> map_;
-    map<Predicate*, unique_lock<mutex>*> lock_map_;
 
 
 public:
 
-    CondMgr(void){}// { guard_ = unique_lock<mutex> (mutex_, defer_lock); 
-    void waituntil(Predicate& prd, unique_lock<mutex>* guard);
-    void autosignal(unique_lock<mutex>* guard);
-    void AppendPredicate(Predicate* prd){
-        predicateQ_.push_back(prd);
+    CondMgr(void){}
+    void waituntil(Predicate& prd);
+    void autosignal();
+    
+    void AppendPredicate(prd_cond_pair& pair){
+        pair_list_.push_back(pair);
     } 
+    
 
 };
 
