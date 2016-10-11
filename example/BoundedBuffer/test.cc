@@ -49,8 +49,8 @@ int main(int argc, char* argv[])
 
 void put ( void ){ 
     while(sum_p < sum_c){
-        vector<int> v (5, 1);
+        vector<int> v (50, 1);
         mybuff.put(v);
-        sum_p = sum_p + 5;
+        sum_p = sum_p + 50;
     }
 }
